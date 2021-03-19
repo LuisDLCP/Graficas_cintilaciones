@@ -3,15 +3,14 @@
 ***************************************
 What's about?
 --------------
-This script generates s4 graphs for each constelation and frequency.
+This script generates s4 graphs for each constelation and frequency: GPS & GALILEO (default)
    -> INPUT: *.s4 files
-   -> OUTPUT: *.pdf graphs
+   -> OUTPUT: *.pdf files
 -------------
 How it works?
-    1) Place the INPUT files in the folder: /Input_data/Data_set/
+    1) Place the INPUT files in the folder: ~/Input_data/Data_set/
     2) Run the script plot_s4.py
-    3) The OUTPUT files will be saved in the folder: /Output_files/station_name/
-
+    3) The OUTPUT files will be saved in the folder: ~/Output_files/
 -
 -
 -----enjoy using it :) -------------------
