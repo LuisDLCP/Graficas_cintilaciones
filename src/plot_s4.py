@@ -7,6 +7,8 @@
 # 's4' variable, for each frequency
 # and constellation. SBAS data is 
 # included in GPS & GALILEO graphs. 
+# After plotting, graphs are saved in
+# an A4 pdf file. 
 # Author: Luis D.
 # :)
 
@@ -315,6 +317,19 @@ class ScintillationPlot():
         figure_name = file_name[:-3]  
         return figure_name
 
+    def get_station_name(self):
+        """
+        Get the station name based on the station code.
+        Add other stations names if neccessary. 
+        """
+        station_code = self.figure_name()[:4]
+        if station_code == "ljic":
+            return "Jicamarca"
+        elif station_code == "lsba":
+            return "San-Bartolomé"
+        else:
+            return "" 
+
     # Check no null column in the frequency column
     def _check_noNull_values(self, const, freq):
         mask = self.df2["PRN"].str.contains(const)
@@ -363,7 +378,7 @@ class ScintillationPlot():
             
             # Create the figure with the subplots 
             n_plots = len(PRNs) + len(PRNs)%2 # Number of subplots with data (even number) 
-            n_rows = 6 # Number of available rows p/ page 
+            n_rows = 10 # 6 # Number of available rows p/ page 
             n_cols = 2 # Number of available columns p/ page 
             hratios = [1]*n_rows
 
@@ -515,16 +530,16 @@ class ScintillationPlot():
                         # -> Title 
                         if j == 0: # Subplot on Upper left  
                             fig.text(0, 1, fecha3, ha='left', va='bottom', fontsize=17, weight='semibold', transform=ax.transAxes)
-                            fig.text(0.5, 1, 'Jicamarca', ha='left', va='bottom', fontsize=17, weight='semibold', transform=ax.transAxes)   
+                            fig.text(0.42, 1, self.get_station_name(), ha='left', va='bottom', fontsize=17, weight='semibold', transform=ax.transAxes)   
                                           
                         if j == 1: # Subplot on Upper right
-                            fig.text(0, 1, 'S4', ha='center', va='bottom', fontsize=19, weight='semibold', transform=ax.transAxes)
+                            fig.text(0, 1.3, 'S4', ha='center', va='bottom', fontsize=19, weight='semibold', transform=ax.transAxes)
                             fig.text(0.3, 1, frequency_value, ha='center', va='bottom', fontsize=17, weight='semibold', transform=ax.transAxes)
                             fig.text(1, 1, f"{frequency_name} | {self.get_const_name(const)}", ha='right', va='bottom', fontsize=17, weight='semibold', transform=ax.transAxes)
 
                         # -> Labels
                         if j == n_plots2-1: # x axis label, Subplot on Lower right
-                            fig.text(0, -0.5, 'Time UTC', ha='center', va='center', fontsize=14, transform=ax.transAxes) 
+                            fig.text(0, -0.75, 'Time UTC', ha='center', va='center', fontsize=14, transform=ax.transAxes) # -0.5
                         
                         aux_nrows = int(n_plots2/n_cols)
                         if j == aux_nrows-aux_nrows%2: # y axis label on the left
@@ -576,8 +591,8 @@ def main():
             pdf.close()
             
             # Move input files to a permanent directory
-            file_name = file_i[len(input_files_path):]
-            os.rename(file_i, input_files_path_op+file_name)
+            #file_name = file_i[len(input_files_path):]
+            #os.rename(file_i, input_files_path_op+file_name)
     
     return 'Ok'
 
