@@ -568,8 +568,8 @@ class ScintillationPlot():
 
 def main():
     # Specify the consts and freqs to plot 
-    const_list = ['G', 'E'] #  Constelations list  
-    freq_list = ['S4_sig1', 'S4_sig2', 'S4_sig3'] # Frecuencies list 
+    const_freq_list = {"G":["S4_sig1", "S4_sig2", "S4_sig3"] , 
+                       "E":["S4_sig1", "S4_sig2"]}
 
     list_input_files = glob.glob(input_files_path + "*.s4")
     if len(list_input_files) > 0:
@@ -585,9 +585,9 @@ def main():
             pdf = PdfPages(output_files_path + figure_name2)
 
             # -> Generate the plots 
-            for c in const_list:
-                for f in freq_list:         
-                    fig = g.plot1_s4(const=c, freq=f, sbas=True, pdf=pdf) 
+            for const, freqs in const_freq_list.items():
+                for freq in freqs:         
+                    fig = g.plot1_s4(const=const, freq=freq, sbas=True, pdf=pdf) 
             pdf.close()
             
             # Move input files to a permanent directory
