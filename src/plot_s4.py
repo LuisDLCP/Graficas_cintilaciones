@@ -423,16 +423,19 @@ class ScintillationPlot():
 
                             for k in range(3):
                                 df4_s4 = df3_s4[k+1]
-
-                                ax.plot(df4_s4.index, df4_s4.values, '.', color=colors1[k], markersize=2)
+                                # Resampling each minute
+                                df4_s4 = df4_s4.sort_index().asfreq("T") # Resampling each minute
+                                
+                                ax.plot(df4_s4.index, df4_s4.values, '-', color=colors1[k], markersize=2)
                                 ax.set_facecolor(color="lightgrey")
                                 ax.axvspan(fecha_morning_first, fecha_morning_last, color="white") # strip morning/night
                             
                             # Plot elevation info
                             df3_elev = self.get_elevation(prn_value, freq)
+                            df3_elev = df3_elev.sort_index().asfreq("T") # Resampling each minute
                             
                             color2 = "orange"
-                            ax2.plot(df3_elev.index, df3_elev.values, '.', color=color2, markersize=1)
+                            ax2.plot(df3_elev.index, df3_elev.values, '-', color=color2, markersize=1)
                             
                             # Annotate the prn in the subplot
                             x_location = fecha2 + pd.Timedelta(minutes=30)
@@ -568,8 +571,9 @@ class ScintillationPlot():
 
 def main():
     # Specify the consts and freqs to plot 
-    const_freq_list = {"G":["S4_sig1", "S4_sig2", "S4_sig3"] , 
-                       "E":["S4_sig1", "S4_sig2"]}
+    const_freq_list = {"G":["S4_sig1"]}
+    #const_freq_list = {"G":["S4_sig1", "S4_sig2", "S4_sig3"] , 
+    #                   "E":["S4_sig1", "S4_sig2"]}
 
     list_input_files = glob.glob(input_files_path + "*.s4")
     if len(list_input_files) > 0:
@@ -578,6 +582,9 @@ def main():
             g.read_s4_file(file_i)
             g.process_dataframe()
             g.filter_dataframe() # Dataframe ready to plot 
+
+            # Erase
+            #print(g.df)
 
             # Plot 
             # -> Create an empty pdf file to save the plots
@@ -597,5 +604,6 @@ def main():
     return 'Ok'
 
 if __name__ == '__main__':
+    print("STARTING ...")
     main()
     print("FINISHED ----------")
