@@ -378,7 +378,7 @@ class ScintillationPlot():
             
             # Create the figure with the subplots 
             n_plots = len(PRNs) + len(PRNs)%2 # Number of subplots with data (even number) 
-            n_rows = 10 # 6 # Number of available rows p/ page 
+            n_rows = 18 #10 # 6 # Number of available rows p/ page 
             n_cols = 2 # Number of available columns p/ page 
             hratios = [1]*n_rows
 
@@ -439,7 +439,7 @@ class ScintillationPlot():
                             
                             # Annotate the prn in the subplot
                             x_location = fecha2 + pd.Timedelta(minutes=30)
-                            ax2.text(x_location, 35, self._convert2SVID(prn_value), fontsize=15, weight='roman') # 0.375
+                            ax2.text(x_location, 30, self._convert2SVID(prn_value), fontsize=12, weight='roman') # 0.375,[35,fontsize=15]
 
                         # Set axis limits 
                         ax.set_xlim([fecha2, fecha2_tomorrow])
@@ -542,7 +542,7 @@ class ScintillationPlot():
 
                         # -> Labels
                         if j == n_plots2-1: # x axis label, Subplot on Lower right
-                            fig.text(0, -0.75, 'Time UTC', ha='center', va='center', fontsize=14, transform=ax.transAxes) # -0.5
+                            fig.text(0, -1.35, 'Time UTC', ha='center', va='center', fontsize=14, transform=ax.transAxes) # -0.75 #-0.5
                         
                         aux_nrows = int(n_plots2/n_cols)
                         if j == aux_nrows-aux_nrows%2: # y axis label on the left
@@ -571,9 +571,9 @@ class ScintillationPlot():
 
 def main():
     # Specify the consts and freqs to plot 
-    const_freq_list = {"G":["S4_sig1"]}
-    #const_freq_list = {"G":["S4_sig1", "S4_sig2", "S4_sig3"] , 
-    #                   "E":["S4_sig1", "S4_sig2"]}
+    #const_freq_list = {"G":["S4_sig1"]}
+    const_freq_list = {"G":["S4_sig1", "S4_sig2", "S4_sig3"] , 
+                       "E":["S4_sig1", "S4_sig2"]}
 
     list_input_files = glob.glob(input_files_path + "*.s4")
     if len(list_input_files) > 0:
