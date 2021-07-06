@@ -188,6 +188,15 @@ class ScintillationPlot():
         
         return prn_values
 
+    def all_prns(self, const='G'):
+        if const=='G':
+            list_prns = [f'G{i+1}' for i in range(32)]
+        elif const=='E':
+            list_prns = [f'E{i+1}' for i in range(36)]
+        else:
+            list_prns = []
+        return list_prns
+
     # Extract S4 data
     def get_s4(self, prn='G10', freq='S4_sig1'): # prn: str (e.g. 'C14') ; freq: str (e.g. 'S4_sig1')  
         mask = self.df2["PRN"] == prn
@@ -363,7 +372,8 @@ class ScintillationPlot():
             fecha_morning_last = fecha_morning_last.to_pydatetime()
 
             # Get the PRNs
-            PRNs = self.extract_prns(const, freq)
+            #PRNs = self.extract_prns(const, freq)
+            PRNs = self.all_prns(const)
             
             # Include SBAS data if corresponds
             if sbas: PRNs = self._append_sbas_prns(const, freq, PRNs)
@@ -582,9 +592,6 @@ def main():
             g.read_s4_file(file_i)
             g.process_dataframe()
             g.filter_dataframe() # Dataframe ready to plot 
-
-            # Erase
-            #print(g.df)
 
             # Plot 
             # -> Create an empty pdf file to save the plots
