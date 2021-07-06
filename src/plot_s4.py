@@ -415,21 +415,24 @@ class ScintillationPlot():
                         # ax -> s4
                         # ax2 -> elevation
                         ax2 = ax.twinx()
+                        # y axis order
+                        #ax2.set_zorder(ax.get_zorder()+1)
+                        #ax.patch.set_visible(False)
                         
                         # Plot s4 & elevation data
                         if j < len(PRNs_section):
-                            # Plot s4 info
                             prn_value = PRNs_section[j]
                             
                             # -> Get the correct freq if sbas==True
                             if sbas and prn_value[0]=='S': 
                                 freq_n = self._change_frequency(const, freq)
                             else: freq_n = freq
-                                
+                            
+                            # Plot s4 info    
                             df3_s4 = self.get_s4(prn_value, freq_n)
                             
                             color1 = "blue" # This color is used in y axis labels, ticks and border  
-                            colors1 = ["lightsteelblue", "cornflowerblue", "navy"] # These colors are used for the plots
+                            colors1 = ["navy"]*3 #["lightsteelblue", "cornflowerblue", "navy"] # These colors are used for the plots
 
                             for k in range(3):
                                 df4_s4 = df3_s4[k+1]
@@ -448,8 +451,8 @@ class ScintillationPlot():
                             ax2.plot(df3_elev.index, df3_elev.values, '-', color=color2, markersize=1)
                             
                             # Annotate the prn in the subplot
-                            x_location = fecha2 + pd.Timedelta(minutes=30)
-                            ax2.text(x_location, 30, self._convert2SVID(prn_value), fontsize=12, weight='roman') # 0.375,[35,fontsize=15]
+                            x_location = fecha2 + pd.Timedelta(hours=21, minutes=30) #- pd.Timedelta(minutes=30)
+                            ax2.text(x_location, 51, self._convert2SVID(prn_value), fontsize=12, weight='roman') # 0.375,[35,fontsize=15]
 
                         # Set axis limits 
                         ax.set_xlim([fecha2, fecha2_tomorrow])
@@ -561,10 +564,14 @@ class ScintillationPlot():
                             
                         if j == (aux_nrows+(1-aux_nrows%2)): # y axis label on the right 
                             k = (aux_nrows%2)*0.5
-                            fig.text(1.1, 1-k, 'Elevation Angle($^o$)', ha='center', va='center', rotation=-90, fontsize=14, color=color2, transform=ax.transAxes)
+                            fig.text(1.12, 1-k, 'Elevation Angle($^o$)', ha='center', va='center', rotation=-90, fontsize=14, color=color2, transform=ax.transAxes)
 
                     else:
                         ax.axis('off')
+                    
+                    ax.zorder = 2
+                    ax2.zorder = 1
+                    ax.patch.set_visible(False)
 
                     j += 1
 
