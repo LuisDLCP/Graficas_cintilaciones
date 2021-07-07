@@ -412,13 +412,16 @@ class ScintillationPlot():
 
                 for ax in axs.reshape(-1): # Plot from left to right, rather than top to bottom 
                     if j < n_plots_left: # Plot
-                        # ax -> s4
-                        # ax2 -> elevation
+                        # ax -> elevation
+                        # ax2 -> s4
                         ax2 = ax.twinx()
-                        # y axis order
-                        #ax2.set_zorder(ax.get_zorder()+1)
-                        #ax.patch.set_visible(False)
-                        
+
+                        # Change y axis positions 
+                        ax.yaxis.set_label_position("right")
+                        ax.yaxis.tick_right()
+                        ax2.yaxis.set_label_position("left")
+                        ax2.yaxis.tick_left()
+
                         # Plot s4 & elevation data
                         if j < len(PRNs_section):
                             prn_value = PRNs_section[j]
@@ -439,7 +442,7 @@ class ScintillationPlot():
                                 # Resampling each minute
                                 df4_s4 = df4_s4.sort_index().asfreq("T") # Resampling each minute
                                 
-                                ax.plot(df4_s4.index, df4_s4.values, '-', color=colors1[k], markersize=2)
+                                ax2.plot(df4_s4.index, df4_s4.values, '-', color=colors1[k], markersize=2)
                                 ax.set_facecolor(color="lightgrey")
                                 ax.axvspan(fecha_morning_first, fecha_morning_last, color="white") # strip morning/night
                             
@@ -448,63 +451,52 @@ class ScintillationPlot():
                             df3_elev = df3_elev.sort_index().asfreq("T") # Resampling each minute
                             
                             color2 = "orange"
-                            ax2.plot(df3_elev.index, df3_elev.values, '-', color=color2, markersize=1)
+                            ax.plot(df3_elev.index, df3_elev.values, '-', color=color2, markersize=1)
                             
                             # Annotate the prn in the subplot
                             x_location = fecha2 + pd.Timedelta(hours=21, minutes=30) #- pd.Timedelta(minutes=30)
-                            ax2.text(x_location, 51, self._convert2SVID(prn_value), fontsize=12, weight='roman') # 0.375,[35,fontsize=15]
+                            ax.text(x_location, 51, self._convert2SVID(prn_value), fontsize=12, weight='roman') # 0.375,[35,fontsize=15]
 
                         # Set axis limits 
                         ax.set_xlim([fecha2, fecha2_tomorrow])
-                        ax.set_ylim([0,1])
-                        ax2.set_ylim([0,90])
+                        ax.set_ylim([0,90])
+                        ax2.set_ylim([0,1])
 
-                        # Set ticks and tick labels 
-                        # -> Set y axis format, labels odds subplots only
-                        len_half_ax = len(axs.T.reshape(-1))/2
+                        ax.yaxis.set_minor_locator(AutoMinorLocator(4))
+                        ax.set_yticks([0,90])
+                        ax2.yaxis.set_minor_locator(AutoMinorLocator(4))
+                        ax2.set_yticks([0,1])
 
-                        if j%2 == 1: # change only for the 2nd column    
-                            # Set y labels only to even subplots
-                            ax.yaxis.set_minor_locator(AutoMinorLocator(4))
-                            ax.set_yticks([0,1])
-                            ax2.yaxis.set_minor_locator(AutoMinorLocator(4))
-                            ax2.set_yticks([0,90])
-
-                            if j%4 == 1: # subsequent subplot  
-                                ax.set_yticklabels([0,1])
-                                ax2.set_yticklabels([0,90])
-                            else:    
-                                ax.set_yticklabels(['',''])
+                        if j%2 == 0: # first column 
+                            ax.set_yticklabels(['',''])
+                            if j%4 == 0:
+                                ax2.set_yticklabels([0,1])
+                            else:
                                 ax2.set_yticklabels(['',''])
-
-                            # Set yellow color to the right y axis
-                            for axis in ['top','bottom','left']:
-                                ax.spines[axis].set_linewidth(2)
-                                ax2.spines[axis].set_linewidth(2)
-
-                            ax.spines['right'].set_color(color2)
-                            ax.spines['right'].set_linewidth(2)
-                            ax2.spines['right'].set_color(color2)
-                            ax2.spines['right'].set_linewidth(2)
-                            ax2.tick_params(axis='y', which='both', colors=color2)
-
-                        else: # apply some changes to the 1st column 
-                            # remove y tick labels for elevation 
-                            ax2.yaxis.set_minor_locator(AutoMinorLocator(4))
-                            ax2.set_yticks([0,90])
-                            ax2.set_yticklabels(['',''])
-
+                            
                             # set linewidth to top, bottom and right borders of the subplot
-                            for axis in ['top','bottom','right']:
+                            for axis in ['top','bottom','right','left']:
+                                ax.spines[axis].set_linewidth(2)
+                                ax2.spines[axis].set_linewidth(2)
+                            # set color for left spin
+                            ax2.spines['left'].set_color(color1)
+                            ax2.tick_params(axis='y', which='both', colors=color1) # tick and tick label color
+
+                        else: # second column 
+                            ax2.set_yticklabels(['',''])
+                            if j%4 == 1:
+                                ax.set_yticklabels([0,90])
+                            else:
+                                ax.set_yticklabels(['',''])
+                            
+                            # set linewidth to top, bottom and right borders of the subplot
+                            for axis in ['top','bottom','right','left']:
                                 ax.spines[axis].set_linewidth(2)
                                 ax2.spines[axis].set_linewidth(2)
 
-                            # Set blue color to the left y axis
-                            ax.spines['left'].set_color(color1)
-                            ax.spines['left'].set_linewidth(2)
-                            ax2.spines['left'].set_color(color1)
-                            ax2.spines['left'].set_linewidth(2)
-                            ax.tick_params(axis='y', which='both', colors=color1)
+                            # set color for right spin
+                            ax2.spines['right'].set_color(color2)
+                            ax.tick_params(axis='y', which='both', colors=color2) # tick and tick label color
 
                         # -> Set x axis format 
                         hours = mdates.HourLocator(interval = 2)
@@ -518,9 +510,9 @@ class ScintillationPlot():
                         ax.xaxis.set_tick_params(width=2, length=8, which='major', direction='out')
                         ax.xaxis.set_tick_params(width=1, length=4, which='minor', direction='out')
                         ax.yaxis.set_tick_params(width=2, length=15, which='major', direction='inout')
-                        ax.yaxis.set_tick_params(width=1, length=4, which='minor', direction='out')
+                        ax.yaxis.set_tick_params(width=1, length=8, which='minor', direction='inout')
                         ax2.yaxis.set_tick_params(width=2, length=15, which='major', direction='inout')
-                        ax2.yaxis.set_tick_params(width=1, length=4, which='minor', direction='out')
+                        ax2.yaxis.set_tick_params(width=1, length=8, which='minor', direction='inout')
 
                         # -> set the label ticks 
                         ax.tick_params(axis='x', which='major', labelsize=12)
@@ -569,10 +561,6 @@ class ScintillationPlot():
                     else:
                         ax.axis('off')
                     
-                    ax.zorder = 2
-                    ax2.zorder = 1
-                    ax.patch.set_visible(False)
-
                     j += 1
 
                 # Save figure as pdf
