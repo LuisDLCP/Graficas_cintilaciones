@@ -406,7 +406,7 @@ class ScintillationPlot():
                     PRNs_section = PRNs
 
                 # Plot
-                fig, axs = plt.subplots(n_rows, n_cols, figsize=fig_size, sharex=False, sharey="row",
+                fig, axs = plt.subplots(n_rows, n_cols, figsize=fig_size, sharex=False, sharey=False,
                                 gridspec_kw={'hspace': 0, 'wspace': 0, 'height_ratios':hratios})   
                 j = 0
 
