@@ -1,14 +1,20 @@
 #!/home/luis/anaconda3/bin/python3
 #__________________________________
 #           PLOT S4
-#             v4.0
+#             v5.0
 #----------------------------------
 # This program makes some graphs of 
 # 's4' variable, for each frequency
 # and constellation. SBAS data is 
 # included in GPS & GALILEO graphs. 
 # After plotting, graphs are saved in
-# an A4 pdf file. 
+# an A4 pdf file.
+# Changes:
+# - dash marker ('-') instead of dot ('.')
+# - 36 subplots/page
+# - PRN names on the right-hand side 
+# - s4 graphs above elevation graphs
+# - single s4 line's color (blue) 
 # Author: Luis D.
 # :)
 
@@ -459,8 +465,8 @@ class ScintillationPlot():
 
                         # Set axis limits 
                         ax.set_xlim([fecha2, fecha2_tomorrow])
-                        ax.set_ylim([0,90])
-                        ax2.set_ylim([0,1])
+                        ax.set_ylim([0,90]) # elevation
+                        ax2.set_ylim([0,1]) # s4
 
                         ax.yaxis.set_minor_locator(AutoMinorLocator(4))
                         ax.set_yticks([0,90])
